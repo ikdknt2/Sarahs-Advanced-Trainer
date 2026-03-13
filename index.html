@@ -2,27 +2,50 @@
 <html>
 <body>
 
-<svg width="500" height="500" viewBox="-200 -200 500 500">
+<svg id="skewb" width="500" height="500" viewBox="-200 -200 500 500"></svg>
 
-<!-- center diamond -->
-<polygon points="0,100 -100,0 0,-100 100,0"
-fill="white" stroke="black"/>
+<script>
 
-<!-- triangles -->
+const COS60 = 0.5
+const SIN60 = 0.86602540378
 
-<polygon points="-100,100 0,100 -100,0"
-fill="red" stroke="black"/>
+function iso(x,y){
+ return [
+  x + COS60*y,
+  SIN60*y
+ ]
+}
 
-<polygon points="100,100 0,100 100,0"
-fill="green" stroke="black"/>
+function poly(points,color){
 
-<polygon points="-100,-100 0,-100 -100,0"
-fill="blue" stroke="black"/>
+ const svg=document.getElementById("skewb")
 
-<polygon points="100,-100 0,-100 100,0"
-fill="orange" stroke="black"/>
+ const p=points.map(([x,y])=>{
+   const [X,Y]=iso(x,y)
+   return X+","+(-Y)
+ }).join(" ")
 
-</svg>
+ const el=document.createElementNS(
+   "http://www.w3.org/2000/svg",
+   "polygon"
+ )
+
+ el.setAttribute("points",p)
+ el.setAttribute("fill",color)
+ el.setAttribute("stroke","black")
+
+ svg.appendChild(el)
+
+}
+
+poly([[0,100],[-100,0],[0,-100],[100,0]],"white")
+
+poly([[-100,100],[0,100],[-100,0]],"red")
+poly([[100,100],[0,100],[100,0]],"green")
+poly([[-100,-100],[0,-100],[-100,0]],"blue")
+poly([[100,-100],[0,-100],[100,0]],"orange")
+
+</script>
 
 </body>
 </html>
