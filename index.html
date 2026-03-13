@@ -25,8 +25,8 @@ function transform(x,y){
  let Y = SIN60*y
 
  // 30°回転
- let xr = X*COS30 - Y*SIN30
- let yr = X*SIN30 + Y*COS30
+ let xr = X*COS30 + Y*SIN30
+ let yr = -X*SIN30 + Y*COS30
 
  return [xr,yr]
 }
