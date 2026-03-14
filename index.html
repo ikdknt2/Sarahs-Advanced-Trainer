@@ -74,7 +74,7 @@ function transform(x,y,rot){
 }
 
 function poly(points,color,rot){
-
+ setTimeout(wait, 1000)
  const svg=document.getElementById("skewb")
 
  const pts=points.map(([x,y])=>{
@@ -109,7 +109,7 @@ const tris=[
 
 function drawFace(color,rot){
 
-setTimeout(poly,1000, center,color,rot)
+poly(center,color,rot)
 
  for(let i=0;i<4;i++){
   poly(tris[i],color,rot)
@@ -125,6 +125,10 @@ drawFace("green",1)
  
 // R
 drawFace("red",2)
+
+function wait(){
+ console.log("waiting")
+}
 
 
 </script>
