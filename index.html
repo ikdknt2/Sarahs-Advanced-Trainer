@@ -11,19 +11,28 @@ const COS60 = 0.5
 const SIN60 = 0.86602540378
 const COS30 = 0.86602540378
 const SIN30 = 0.5
-
-
+ 
 function rotate(x,y,deg){
+
+ const cx = 0
+ const cy = -100
+
  const r = deg*Math.PI/180
  const c = Math.cos(r)
  const s = Math.sin(r)
 
- return [
-  x*c - y*s,
-  x*s + y*c
- ]
-}
+ let x1 = x - cx
+ let y1 = y - cy
 
+ let x2 = x1*c - y1*s
+ let y2 = x1*s + y1*c
+
+ return [
+  x2 + cx,
+  y2 + cy
+ ]
+
+}
 
 function iso(x,y){
  return [
