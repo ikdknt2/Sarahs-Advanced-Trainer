@@ -7,74 +7,58 @@
 
 <script>
 
-// ===== 定数 =====
-
 const COS60 = 0.5
 const SIN60 = 0.86602540378
-
 const COS30 = 0.86602540378
 const SIN30 = 0.5
 
 
-// ===== 回転 =====
-
 function rotate(x,y,deg){
-
- const rad = deg*Math.PI/180
- const cos = Math.cos(rad)
- const sin = Math.sin(rad)
+ const r = deg*Math.PI/180
+ const c = Math.cos(r)
+ const s = Math.sin(r)
 
  return [
-  x*cos - y*sin,
-  x*sin + y*cos
+  x*c - y*s,
+  x*s + y*c
  ]
-
 }
 
 
-// ===== isometric =====
-
 function iso(x,y){
-
  return [
   x + COS60*y,
   SIN60*y
  ]
-
 }
 
 
-// ===== 30°傾き =====
-
 function tilt(x,y){
-
  return [
   x*COS30 + y*SIN30,
   -x*SIN30 + y*COS30
  ]
-
 }
 
 
-// ===== polygon描画 =====
+function transform(x,y,rot){
 
+ let [x1,y1] = rotate(x,y,rot)
+ let [x2,y2] = iso(x1,y1)
+ let [x3,y3] = tilt(x2,y2)
+
+ return [x3,y3]
+}
+
+
+// 描画だけ
 function poly(points,color,rot){
 
  const svg = document.getElementById("skewb")
 
  const pts = points.map(([x,y])=>{
-
-   // 面回転
-   let [x1,y1] = rotate(x,y,rot)
-
-   // 3D風投影
-   let [x2,y2] = iso(x1,y1)
-
-   // 画面傾き
-   let [x3,y3] = tilt(x2,y2)
-
-   return x3 + "," + (-y3)
-
+  let [X,Y] = transform(x,y,rot)
+  return X + "," + (-Y)
  }).join(" ")
 
  const el = document.createElementNS(
@@ -91,8 +75,7 @@ function poly(points,color,rot){
 }
 
 
-// ===== 1面 =====
-
+// 1面の形
 const center = [[0,100],[-100,0],[0,-100],[100,0]]
 
 const tris = [
@@ -114,35 +97,14 @@ function drawFace(rot,color){
 }
 
 
-// ===== 描画 =====
-
+// 描画
 drawFace(0,"white")
 drawFace(120,"red")
 drawFace(240,"green")
-
-function drawFace(rot,colors){
-
- poly(center,colors[0],rot)
-
- for(let i=0;i<4;i++){
-  poly(tris[i],colors[i+1],rot)
- }
-
-}
-
-
-// U
-drawFace(0,["white","white","white","white","white"])
-
-// R
-drawFace(120,["red","red","red","red","red"])
-
-// F
-drawFace(240,["green","green","green","green","green"])
-
 
 </script>
 
 </body>
 </html>
+
 
