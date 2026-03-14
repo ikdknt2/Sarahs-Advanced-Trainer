@@ -7,12 +7,43 @@
 
 <script>
 
+const COS60 = 0.5
+const SIN60 = 0.86602540378
+const COS30 = 0.86602540378
+const SIN30 = 0.5
+
+
+function iso(x,y){
+ return [
+  x + COS60*y,
+  SIN60*y
+ ]
+}
+
+function tilt(x,y){
+ return [
+  x*COS30 + y*SIN30,
+  -x*SIN30 + y*COS30
+ ]
+}
+
+function transform(x,y){
+ let [x1,y1] = iso(x,y)
+ let [x2,y2] = tilt(x1,y1)
+ return [x2,y2]
+}
+
+
 function poly(points,color,dx,dy){
 
  const svg = document.getElementById("skewb")
 
  const pts = points.map(([x,y])=>{
-  return (x+dx) + "," + (-(y+dy))
+
+  let [X,Y] = transform(x,y)
+
+  return (X+dx) + "," + (-(Y+dy))
+
  }).join(" ")
 
  const el = document.createElementNS(
@@ -54,10 +85,10 @@ function drawFace(color,dx,dy){
 drawFace("white",0,0)
 
 // R
-drawFace("red",173,100)
+drawFace("red",200,0)
 
 // F
-drawFace("green",-173,100)
+drawFace("green",-200,0)
 
 </script>
 
