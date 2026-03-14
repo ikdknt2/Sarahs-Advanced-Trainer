@@ -7,67 +7,12 @@
 
 <script>
 
-const COS60 = 0.5
-const SIN60 = 0.86602540378
-const COS30 = 0.86602540378
-const SIN30 = 0.5
- 
-function rotate(x,y,deg){
-
- const cx = 0
- const cy = -100
-
- const r = deg*Math.PI/180
- const c = Math.cos(r)
- const s = Math.sin(r)
-
- let x1 = x - cx
- let y1 = y - cy
-
- let x2 = x1*c - y1*s
- let y2 = x1*s + y1*c
-
- return [
-  x2 + cx,
-  y2 + cy
- ]
-
-}
-
-function iso(x,y){
- return [
-  x + COS60*y,
-  SIN60*y
- ]
-}
-
-
-function tilt(x,y){
- return [
-  x*COS30 + y*SIN30,
-  -x*SIN30 + y*COS30
- ]
-}
-
-
-function transform(x,y,rot){
-
- let [x1,y1] = rotate(x,y,rot)
- let [x2,y2] = iso(x1,y1)
- let [x3,y3] = tilt(x2,y2)
-
- return [x3,y3]
-}
-
-
-// 描画だけ
-function poly(points,color,rot){
+function poly(points,color,dx,dy){
 
  const svg = document.getElementById("skewb")
 
  const pts = points.map(([x,y])=>{
-  let [X,Y] = transform(x,y,rot)
-  return X + "," + (-Y)
+  return (x+dx) + "," + (-(y+dy))
  }).join(" ")
 
  const el = document.createElementNS(
@@ -84,7 +29,6 @@ function poly(points,color,rot){
 }
 
 
-// 1面の形
 const center = [[0,100],[-100,0],[0,-100],[100,0]]
 
 const tris = [
@@ -95,25 +39,27 @@ const tris = [
 ]
 
 
-function drawFace(rot,color){
+function drawFace(color,dx,dy){
 
- poly(center,color,rot)
+ poly(center,color,dx,dy)
 
  for(let i=0;i<4;i++){
-  poly(tris[i],color,rot)
+  poly(tris[i],color,dx,dy)
  }
 
 }
 
 
-// 描画
-drawFace(0,"white")
-drawFace(120,"red")
-drawFace(240,"green")
+// U
+drawFace("white",0,0)
+
+// R
+drawFace("red",173,100)
+
+// F
+drawFace("green",-173,100)
 
 </script>
 
 </body>
 </html>
-
-
