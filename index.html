@@ -8,10 +8,9 @@
 <script>
 
 const COS60 = 0.5
-const SIN60 = 0.86602540378
-const COS30 = 0.86602540378
+const SIN60 = 0.8660254
+const COS30 = 0.8660254
 const SIN30 = 0.5
-
 
 function iso(x,y){
  return [
@@ -27,26 +26,66 @@ function tilt(x,y){
  ]
 }
 
-function transform(x,y){
- let [x1,y1] = iso(x,y)
- let [x2,y2] = tilt(x1,y1)
- return [x2,y2]
+function rot120(x,y){
+ const c=-0.5
+ const s=0.8660254
+ return [
+  x*c - y*s,
+  x*s + y*c
+ ]
 }
 
+function rot240(x,y){
+ const c=-0.5
+ const s=-0.8660254
+ return [
+  x*c - y*s,
+  x*s + y*c
+ ]
+}
 
-function poly(points,color,dx,dy){
+function transform(x,y,rot){
 
- const svg = document.getElementById("skewb")
+ let [x1,y1]=iso(x,y)
+ let [x2,y2]=tilt(x1,y1)
 
- const pts = points.map(([x,y])=>{
+ // 回転中心（下三角の頂点）
+ const cx=0
+ const cy=-100
 
-  let [X,Y] = transform(x,y)
+ if(rot==1){
+  x2-=cx
+  y2-=cy
+  ;[x2,y2]=rot120(x2,y2)
+  x2+=cx
+  y2+=cy
+ }
 
-  return (X+dx) + "," + (-(Y+dy))
+ if(rot==2){
+  x2-=cx
+  y2-=cy
+  ;[x2,y2]=rot240(x2,y2)
+  x2+=cx
+  y2+=cy
+ }
+
+ return [x2,y2]
+
+}
+
+function poly(points,color,rot){
+
+ const svg=document.getElementById("skewb")
+
+ const pts=points.map(([x,y])=>{
+
+  let [X,Y]=transform(x,y,rot)
+
+  return X + "," + (-Y)
 
  }).join(" ")
 
- const el = document.createElementNS(
+ const el=document.createElementNS(
   "http://www.w3.org/2000/svg",
   "polygon"
  )
@@ -59,36 +98,33 @@ function poly(points,color,dx,dy){
 
 }
 
+const center=[[0,100],[-100,0],[0,-100],[100,0]]
 
-const center = [[0,100],[-100,0],[0,-100],[100,0]]
-
-const tris = [
+const tris=[
  [[-100,100],[0,100],[-100,0]],
  [[100,100],[0,100],[100,0]],
  [[-100,-100],[0,-100],[-100,0]],
  [[100,-100],[0,-100],[100,0]]
 ]
 
+function drawFace(color,rot){
 
-function drawFace(color,dx,dy){
-
- poly(center,color,dx,dy)
+ poly(center,color,rot)
 
  for(let i=0;i<4;i++){
-  poly(tris[i],color,dx,dy)
+  poly(tris[i],color,rot)
  }
 
 }
 
-
 // U
-drawFace("white",0,0)
+drawFace("white",0)
 
 // R
-drawFace("red",200,0)
+drawFace("red",1)
 
 // F
-drawFace("green",-200,0)
+drawFace("green",2)
 
 </script>
 
